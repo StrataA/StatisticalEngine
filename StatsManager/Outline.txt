@@ -1,0 +1,22 @@
+
+Idea is to call uploader routine every fixed sample interval, that is every time the 0th node is reached again.
+A recorder routine should update the current node with latest data by calling appropriate CLL::recordDataSample.
+Once current.next == head (current.next.sampleInstance == 0), the recorder routine knows a full cycle is done 
+and it should awaken the uploader and enter sleep mode.
+
+The uploader routine is triggered to either upload a full cycle of data to a txt file or 
+to process collected data (eg find the average, standard deviation for the cycle).
+This data is given a originID, then saved to a txt file or sent over a network for further processing.
+Upon completion of the uploader routine, the recorder routine is awakened again and the uploader reenters sleep mode.
+The CLL is thus free to record data continuously, overwriting the oldest samples without data loss.
+
+The remote processing/uploading can be done in a separate thread if needed.
+The remote entity should preform a t-test on the uploaded data to determine if anomalies are present, and flag them for 
+further review. All data is then timed stamped and stored for historical analysis.
+A database model may be needed for long term storage - investigation ongoing.
+A regression analysis may also be performed on historical data to predict future trends.
+
+DataManager.h contains the following functions
+1 - recordData
+    
+2 - exportData
